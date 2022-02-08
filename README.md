@@ -1,5 +1,5 @@
 # 4chanScrapper
-#### This program asynchronously scrapes threads from **4chan.org**, downloading **every image and video** in the thread.
+#### This program asynchronously scrapes a single thread from **4chan.org**, downloading **every image and video** in the thread.
 
 ### Requirements
 > `pip install -r "requirements.txt"`
@@ -22,4 +22,4 @@ Every other package used is included in Python 3.8+
     python 4chanScrapper.py "https://boards.4chan.org/wg/thread/7830569" "C://Users/username/Desktop"
 ```
 
-###### v1.1.1 - readme.md update - stable.
+###### v1.1.2 - readme.md fix - stable.
