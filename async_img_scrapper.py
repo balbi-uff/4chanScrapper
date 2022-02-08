@@ -1,3 +1,4 @@
+from venv import create
 import requests
 import lxml # do not delete this line, it is used for parsing
 import os
@@ -19,6 +20,9 @@ STD_REQUEST_PROTOCOL = 'http'
 ## other globals
 acceptedFormats = ['webm', '.mp4', '.mp3', '.mov']
 thread_name = None
+ended_tasks = 0
+number_of_tasks = 0
+
 
 def getThreadName(soup):
     """
@@ -48,13 +52,18 @@ def download(file_link):
     """
     Download single image from link.
     """
+
     f = requests.get(file_link).content
-    
+    global ended_tasks, number_of_tasks
+
     with open(get_filename(file_link), 'wb') as tempDownload:
         if not get_filename(file_link)[-4:] in acceptedFormats: # rejects non-declared types of files
             tempDownload.write(f)
-    
-    return None
+    ended_tasks += 1
+
+    # there must be a better way to do this, idk, got lazy and used global variables
+    os.system("cls")
+    print(f"{ended_tasks} of {number_of_tasks} downloaded.")
 
 
 def get_links(main_link):
@@ -94,6 +103,7 @@ def download_images(img_links, path, create_folder):
     """
     global thread_name
     tasks = []
+    
     loop = asyncio.get_event_loop()
     
     os.chdir(path)
@@ -110,26 +120,29 @@ def download_images(img_links, path, create_folder):
     loop.close()
     return None
 
-def async_downloader(link, path):
+def async_downloader(link, path, create_folder):
     """
     Function responsible for creating the task of downloading a thread.
     """
-    
-    download_images(get_links(link), path, create_folder=False)
+    global number_of_tasks
 
-def async_main(link, path):
+    images_links = get_links(link)
+    number_of_tasks = len(images_links)
+    download_images(images_links, path, create_folder)
+
+def async_main(link, path, create_folder=False):
     """
      Times the time it takes to download.
     """
     start = timer()
-    async_downloader(link, path)
+    async_downloader(link, path, create_folder)
     end = timer()
     return end-start
 
 # testing-related
 if __name__ == "__main__":
     thread_code = '7820596'
-    async_main("https://boards.4chan.org/wg/thread/" + thread_code, "C:\\Users\\balbi\\Desktop\\")
+    async_main("https://boards.4chan.org/wg/thread/" + thread_code, "C:\\Users\\balbi\\Desktop\\", True)
 
 
 # developed by Andre Balbi - DerKatze789 - balbi-uff

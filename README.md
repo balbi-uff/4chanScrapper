@@ -12,6 +12,7 @@ Every other package used is included in Python 3.8+
     ```shell:
     python 4chanScrapper.py "thread_url" "path"
     ```
+- You may trigger the automatic creation of a folder if you add the `--create_folder` flag to the command.
 - It was tested successfully in Python 3.8.5
 ### Disclaimer
 
@@ -22,4 +23,4 @@ Every other package used is included in Python 3.8+
     python 4chanScrapper.py "https://boards.4chan.org/wg/thread/7830569" "C://Users/username/Desktop"
 ```
 
-###### v1.0.1 - launch - working :)
+###### v1.1 - create folder and progress update - stable.

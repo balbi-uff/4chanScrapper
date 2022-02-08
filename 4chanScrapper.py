@@ -10,8 +10,8 @@ if __name__ == "__main__":
             raise Error
         link_to_test = arguments[1]
         path = arguments[2]
-
-        execution_time = async_main(link_to_test, path)
+        create_folder = True if "--create_folder" in arguments else False
+        execution_time = async_main(link_to_test, path, create_folder)
         print("Process ended. Time elapsed:{}".format(execution_time))
     except Error:
         print("Please, insert link to download as argument")
