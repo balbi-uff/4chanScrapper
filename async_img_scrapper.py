@@ -103,7 +103,7 @@ def download_images(img_links, path, create_folder):
         os.chdir(f"{thread_name}")
 
     for img_link in img_links:
-        tasks.append(asyncio.create_task(download_image_task(img_link)))
+        tasks.append(loop.create_task(download_image_task(img_link)))
         
     
     loop.run_until_complete(asyncio.gather(*tasks))
@@ -128,8 +128,8 @@ def async_main(link, path):
 
 # testing-related
 if __name__ == "__main__":
-    thread_code = '7830569'
-    async_main("https://boards.4chan.org/wg/thread/" + thread_code, "C:\\Users\\%USERNAME%\\Desktop\\")
+    thread_code = '7820596'
+    async_main("https://boards.4chan.org/wg/thread/" + thread_code, "C:\\Users\\balbi\\Desktop\\")
 
 
 # developed by Andre Balbi - DerKatze789 - balbi-uff

@@ -22,4 +22,4 @@ Every other package used is included in Python 3.8+
     python 4chanScrapper.py "https://boards.4chan.org/wg/thread/7830569" "C://Users/username/Desktop"
 ```
 
-###### v1.0 - launch
+###### v1.0.1 - launch - working :)
