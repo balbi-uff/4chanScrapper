@@ -16,6 +16,7 @@ DIV_CLASS_STD_NAME = 'fileText'
 THREAD_CLASS_STD_NAME = 'postMessage'
 SELECTED_PARSER = 'lxml'
 STD_REQUEST_PROTOCOL = 'http'
+NUM_IMG_STD_SPAN_CLASS = 'ts-images'
 
 ## other globals
 acceptedFormats = ['webm', '.mp4', '.mp3', '.mov']
@@ -24,7 +25,7 @@ ended_tasks = 0
 number_of_tasks = 0
 
 
-def getThreadName(soup):
+def get_thread_name(soup):
     """
     Simple function that gets thread name directly from soup.
     """
@@ -76,12 +77,14 @@ def get_links(main_link):
 
     def get_div_link(d):
         div_soup = make_soup(d, SELECTED_PARSER)
+        
         return div_soup.find('a')['href']
 
     links = []
     raw_content = requests.get(main_link).content
     soup = make_soup(raw_content, SELECTED_PARSER)
-    thread_name = getThreadName(soup)
+    thread_name = get_thread_name(soup)
+    
     
     raw_divs = list(map(str, soup.findAll('div', class_=DIV_CLASS_STD_NAME)))
     
@@ -94,31 +97,28 @@ async def download_image_task(img_link):
     """
     Function responsible for creating the task of downloading a single image.
     """
-    await download(STD_REQUEST_PROTOCOL + ":" + img_link)
+    print()
+    link = STD_REQUEST_PROTOCOL + ":" + img_link
+    await download(link)
     
 
 def download_images(img_links, path, create_folder):
     """
     Main function responsible for downloading images from a thread.
     """
+
     global thread_name
     tasks = []
-    
     loop = asyncio.get_event_loop()
-    
     os.chdir(path)
-    
-    if create_folder:
+    if create_folder and not (os.path.exists(thread_name)):
         os.mkdir(f"{thread_name}")
         os.chdir(f"{thread_name}")
-
     for img_link in img_links:
-        tasks.append(loop.create_task(download_image_task(img_link)))
-        
-    
+        tasks.append(loop.create_task(download_image_task(img_link), name=img_link[-17:]))
     loop.run_until_complete(asyncio.gather(*tasks))
     loop.close()
-    return None
+
 
 def async_downloader(link, path, create_folder):
     """
@@ -128,7 +128,11 @@ def async_downloader(link, path, create_folder):
 
     images_links = get_links(link)
     number_of_tasks = len(images_links)
-    download_images(images_links, path, create_folder)
+    try:
+        download_images(images_links, path, create_folder)
+    except TypeError as e:
+        print(f"I AM A BUG AND I STILL EXIST, THERE IS NO ONE WHO CAN EXTINGUISH ME, PLEASE KILL ME!\nDescription:{e}")
+    return number_of_tasks
 
 def async_main(link, path, create_folder=False):
     """
@@ -141,7 +145,7 @@ def async_main(link, path, create_folder=False):
 
 # testing-related
 if __name__ == "__main__":
-    thread_code = '7820596'
+    thread_code = '7868002'
     async_main("https://boards.4chan.org/wg/thread/" + thread_code, "C:\\Users\\balbi\\Desktop\\", True)
 
 
