@@ -3,19 +3,45 @@ from wave import Error
 from async_img_scrapper import async_main
 import sys
 
+arguments_names = { name : None for name in
+    [
+        "link",
+        "path",
+        "forced_name",
+        "force_resolution",
+        "min_res_x",
+        "min_res_y",
+        "max_res_x",
+        "max_res_y",
+        "create_folder",
+    ]
+}
 if __name__ == "__main__":
     try:
-        arguments = sys.argv
-        if len(arguments) == 1:
+        
+        arguments_values = sys.argv
+        
+        for value_address in range(arguments_values.keys()):
+            arguments_names[arguments_names.keys()[value_address]] = arguments_values[value_address]
+
+        if len(arguments_values) < 1:
             raise Error
-        link_to_test = arguments[1]
-        path = arguments[2]
-        create_folder = True if "--create_folder" in arguments else False
-        execution_time = async_main(link_to_test, path, create_folder)
+        
+    # NAO TA PREVENDO CASOS EM QUE TIPO O CARA BOTA A RESOLUCAO MAS N O NOME TLGD RESOLVE ISSO AE VLW
+
+        execution_time = async_main(link=               arguments_names["link"], 
+                                    path=               arguments_names["path"], 
+                                    forced_name=        arguments_names["forced_name"], 
+                                    force_resolution=   arguments_names["force_resolution"], 
+                                    min_res_x=          arguments_names["min_res_x"], 
+                                    min_res_y=          arguments_names["min_res_y"], 
+                                    max_res_x=          arguments_names["max_res_x"], 
+                                    max_res_y=          arguments_names["max_res_y"], 
+                                    create_folder=      arguments_names["create_folder"])
         print("Process ended. Time elapsed:{}".format(execution_time))
     except Error:
         print("Please, insert link to download as argument")
-        print("Example: python 4chanScrapper.py \"https://boards.4chan.org/wg/thread/7830569\" \"C://Users/username/Desktop\"" )
+        print("Example: python 4chanScrapper.py \"https://boards.4chan.org/wg/thread/7830569\" \"C:\\Wallpapers\\" )
         print("Exiting...")
         sys.exit(1)
     

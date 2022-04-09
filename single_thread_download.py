@@ -28,7 +28,7 @@ def test_async_downloader_directly(link_to_test):
 
     try:
         assert real_number_of_images == number_of_downloaded_images
-        print("async_downloader working!")
+        print("TEST DEBUG >> async_downloader working!")
     except AssertionError:
         print("ERROR -------------------------------------------------------------")
         print("The number of images should be the same!\nrealN:{}|NumOfDownloadedImgs:{}")

@@ -9,7 +9,7 @@ Every other package used is included in Python 3.8+
 ### Usage
 - For now, you can only scrape a single thread. You may do this by executing the program with the following command:
     ```shell:
-    python 4chanScrapper.py "thread_url" "path"
+    python 4chanScrapper.py "thread_url" "path" 
     ```
 - You may trigger the automatic creation of a folder if you add the `--create_folder` flag to the command.
 - Stable in Python 3.8.5
