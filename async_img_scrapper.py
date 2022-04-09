@@ -17,6 +17,7 @@ THREAD_CLASS_STD_NAME = 'postMessage'
 SELECTED_PARSER = 'lxml'
 HTTP_PROTOCOL_SYMBOL = 'http'
 NUM_IMG_STD_SPAN_CLASS = 'ts-images'
+STD_PATH_DOWNLOAD = "C:\\Wallpapers\\"
 
 ## other globals
 acceptedFormats = ['webm', '.mp4', '.mp3', '.mov']
@@ -66,7 +67,7 @@ def download(file_link):
     print(f"{ended_tasks} of {number_of_tasks} downloaded.")
 
 
-def get_links(main_link, manual_name, force_resolution, min_res_x, min_res_y, max_res_x, max_res_y):
+def get_links(main_link, manual_name, min_res_x, min_res_y, max_res_x, max_res_y):
     """
     Gets links from images in page
     """
@@ -100,13 +101,9 @@ def get_links(main_link, manual_name, force_resolution, min_res_x, min_res_y, ma
     for raw_div_html in raw_divs:
         image_resolution = get_image_resolution_raw_hard_coded((raw_div_html))
         
-        if force_resolution:
-            if min_res_x <= image_resolution[0] and min_res_y <= image_resolution[1]:
-                if max_res_x >= image_resolution[0] and max_res_y >= image_resolution[1]:
-                    links.append(get_div_link(raw_div_html))
-        
-        else: 
-            links.append(get_div_link(raw_div_html))
+        if min_res_x <= image_resolution[0] and min_res_y <= image_resolution[1]:
+            if max_res_x >= image_resolution[0] and max_res_y >= image_resolution[1]:
+                links.append(get_div_link(raw_div_html))
 
     return links
 
@@ -120,7 +117,7 @@ async def download_image_task(img_link):
     await download(link)
     
 
-def download_images(img_links, path, create_folder, forced_name):
+def download_images(img_links, path, forced_name):
     """
     Main function responsible for downloading images from a thread.
     """
@@ -129,46 +126,42 @@ def download_images(img_links, path, create_folder, forced_name):
     tasks = []
     loop = asyncio.get_event_loop()
     os.chdir(path)
-    if create_folder and not (os.path.exists(thread_name)):
-        
-        if forced_name:
-           thread_name = forced_name
+    if forced_name and not (os.path.exists(thread_name)):
+        thread_name = forced_name
 
         os.mkdir(f"{thread_name}")
         os.chdir(f"{thread_name}")
+
     for img_link in img_links:
         tasks.append(loop.create_task(download_image_task(img_link), name=img_link[-17:]))
     loop.run_until_complete(asyncio.gather(*tasks))
     loop.close()
 
 
-def async_downloader(link, path, create_folder, forced_name, force_resolution, min_res_x, min_res_y, max_res_x, max_res_y):
+def async_downloader(link, path, forced_name, min_res_x, min_res_y, max_res_x, max_res_y):
     """
     Function responsible for creating the task of downloading a thread.
     """
     global number_of_tasks
 
-    images_links = get_links(link, forced_name, force_resolution, min_res_x, min_res_y, max_res_x, max_res_y)
+    images_links = get_links(link, forced_name, min_res_x, min_res_y, max_res_x, max_res_y)
     number_of_tasks = len(images_links)
     try:
-        download_images(images_links, path, create_folder, forced_name)
+        download_images(images_links, path, forced_name)
     except TypeError as e:
         print(f"I AM A BUG AND I STILL EXIST, THERE IS NO ONE WHO CAN EXTINGUISH ME, PLEASE KILL ME!\nDescription:{e}")
     return number_of_tasks
 
-def async_main(link, path, forced_name=None, force_resolution=None, min_res_x=None, min_res_y=None, max_res_x=None, max_res_y=None, create_folder=False):
+def async_main(link, path, forced_name, min_res_x, min_res_y, max_res_x, max_res_y):
     """
      Times the time it takes to download.
     """
     start = timer()
-    async_downloader(link, path, create_folder, forced_name, force_resolution, min_res_x, min_res_y, max_res_x, max_res_y)
+    if not path:
+        path = STD_PATH_DOWNLOAD
+    async_downloader(link, path, forced_name, min_res_x, min_res_y, max_res_x, max_res_y)
     end = timer()
     return end-start
-
-# testing-related
-if __name__ == "__main__":
-    thread_code = '7858121'
-    async_main("https://boards.4chan.org/wg/thread/" + thread_code, "C:\\Wallpapers\\", "4444444444", True, 1920, 1080, 5000, 5000, True)
 
 
 # developed by Andre Balbi - DerKatze789 - balbi-uff

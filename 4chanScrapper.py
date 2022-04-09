@@ -3,49 +3,69 @@ from wave import Error
 from async_img_scrapper import async_main
 import sys
 
-arguments_names = { name : None for name in
+
+LINK = "-l"
+PATH = "-p"
+NAME = "-name"
+MINIMUM_RESOLUTION_X_AXIS = "-min_x"
+MINIMUM_RESOLUTION_Y_AXIS = "-min_y"
+MAXIMUM_RESOLUTION_X_AXIS = "-max_x"
+MAXIMUM_RESOLUTION_Y_AXIS = "-max_y"
+CREATE_FOLDER_FLAG_NAME = "-cf"
+
+
+ACCEPTED_ARGUMENT_NAMES = { name : None for name in
     [
-        "link",
-        "path",
-        "forced_name",
-        "force_resolution",
-        "min_res_x",
-        "min_res_y",
-        "max_res_x",
-        "max_res_y",
-        "create_folder",
+        LINK,
+        PATH,
+        NAME,
+        MINIMUM_RESOLUTION_X_AXIS,
+        MINIMUM_RESOLUTION_Y_AXIS,
+        MAXIMUM_RESOLUTION_X_AXIS,
+        MAXIMUM_RESOLUTION_Y_AXIS,
     ]
 }
 if __name__ == "__main__":
     try:
-        
-        arguments_values = sys.argv
-        
-        for value_address in range(arguments_values.keys()):
-            arguments_names[arguments_names.keys()[value_address]] = arguments_values[value_address]
+        inputed_args = [
+            LINK, 'https://boards.4chan.org/wg/thread/7886651',
+            PATH, 'C://Wallpapers',
+            NAME, "TEST-NAME-1",
 
-        if len(arguments_values) < 1:
+        ]
+
+        #inputed_args = [LINK, "https://boards.4chan.org/wg/thread/7887741"]
+
+        #inputed_args = sys.argv
+        
+        "Links next argument with previous var (Except for resolution matters). It's confuse, but once you get it, it's easy."
+
+        for arg in inputed_args:
+            if arg in ACCEPTED_ARGUMENT_NAMES.keys():
+                ACCEPTED_ARGUMENT_NAMES[arg] = inputed_args[inputed_args.index(arg)+1]
+        
+        if len(inputed_args) < 1:
             raise Error
         
-    # NAO TA PREVENDO CASOS EM QUE TIPO O CARA BOTA A RESOLUCAO MAS N O NOME TLGD RESOLVE ISSO AE VLW
 
-        execution_time = async_main(link=               arguments_names["link"], 
-                                    path=               arguments_names["path"], 
-                                    forced_name=        arguments_names["forced_name"], 
-                                    force_resolution=   arguments_names["force_resolution"], 
-                                    min_res_x=          arguments_names["min_res_x"], 
-                                    min_res_y=          arguments_names["min_res_y"], 
-                                    max_res_x=          arguments_names["max_res_x"], 
-                                    max_res_y=          arguments_names["max_res_y"], 
-                                    create_folder=      arguments_names["create_folder"])
+        execution_time = async_main(
+                                link=               ACCEPTED_ARGUMENT_NAMES[LINK], 
+                                path=               ACCEPTED_ARGUMENT_NAMES[PATH], 
+                                forced_name=        ACCEPTED_ARGUMENT_NAMES[NAME], 
+                                min_res_x=          int(ACCEPTED_ARGUMENT_NAMES[MINIMUM_RESOLUTION_X_AXIS]) if ACCEPTED_ARGUMENT_NAMES[MINIMUM_RESOLUTION_X_AXIS] else 0, 
+                                min_res_y=          int(ACCEPTED_ARGUMENT_NAMES[MINIMUM_RESOLUTION_Y_AXIS]) if ACCEPTED_ARGUMENT_NAMES[MINIMUM_RESOLUTION_Y_AXIS] else 0, 
+                                max_res_x=          int(ACCEPTED_ARGUMENT_NAMES[MAXIMUM_RESOLUTION_X_AXIS]) if ACCEPTED_ARGUMENT_NAMES[MAXIMUM_RESOLUTION_X_AXIS] else 99999, 
+                                max_res_y=          int(ACCEPTED_ARGUMENT_NAMES[MAXIMUM_RESOLUTION_Y_AXIS]) if ACCEPTED_ARGUMENT_NAMES[MAXIMUM_RESOLUTION_Y_AXIS] else 99999,
+                                )
         print("Process ended. Time elapsed:{}".format(execution_time))
+    
     except Error:
         print("Please, insert link to download as argument")
         print("Example: python 4chanScrapper.py \"https://boards.4chan.org/wg/thread/7830569\" \"C:\\Wallpapers\\" )
         print("Exiting...")
         sys.exit(1)
     
-    except Exception as error_name:
-        print(f"This happened => {error_name}")
-        print("Exiting...")
-        sys.exit(1)
+    # except Exception as error_name:
+    #     print(f"This happened => {error_name}")
+    #     print("Exiting...")
+    #     sys.exit(1)
