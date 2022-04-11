@@ -9,9 +9,25 @@ Every other package used is included in Python 3.8+
 ### Usage
 - For now, you can only scrape a single thread. You may do this by executing the program with the following command:
     ```shell:
-    python 4chanScrapper.py "thread_url" "path"
+    python 4chanScrapper.py -l <thread_link> -p <path_to_save_images>
     ```
-- You may trigger the automatic creation of a folder if you add the `--create_folder` flag to the command.
+### Optional features
+
+- You may set the minimum of maximum resolution of the images to be downloaded by typing how many of these you want in the command line:
+    ```shell:
+    -min_x <min_x>
+    -min_y <min_y>
+    -max_x <max_x>
+    -max_y <max_y>
+    ```
+    where `<min_x>` and `<min_y>` are the minimum resolution of the images in the x and y direction, and `<max_x>` and `<max_y>` are the maximum resolution of the images in the x and y direction.
+    
+- You may automatically trigger the creation of a folder by typing 
+    ```shell:
+    -name <folder_name>
+    ```
+    where `<folder_name>` is the name of the folder to be created.
+    
 - Stable in Python 3.8.5
 ### Disclaimer
 
@@ -22,4 +38,4 @@ Every other package used is included in Python 3.8+
     python 4chanScrapper.py "https://boards.4chan.org/wg/thread/7830569" "C://Users/username/Desktop"
 ```
 
-###### v1.1.3 - readme.md title fix - stable.
+###### v1.2 - CLI options - stable.
