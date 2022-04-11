@@ -1,16 +1,12 @@
-from venv import create
 import requests
-import lxml # do not delete this line, it is used for parsing
 import os
 import asyncio
-from json.tool import main
 from bs4 import BeautifulSoup as make_soup
 from time import time as timer
 
-"""Scrapes every image from a thread"""
+"""Scrapes every image from a thread, according to your specifications."""
 
 # globals 
-
 ## constants
 DIV_CLASS_STD_NAME = 'fileText'
 THREAD_CLASS_STD_NAME = 'postMessage'
@@ -73,7 +69,6 @@ def get_links(main_link, manual_name, min_res_x, min_res_y, max_res_x, max_res_y
     """
     global thread_name
     
-    # Constants
 
     def get_div_link(image_raw_div):
         div_soup = make_soup(image_raw_div, SELECTED_PARSER)
@@ -112,7 +107,6 @@ async def download_image_task(img_link):
     """
     Function responsible for creating the task of downloading a single image.
     """
-    print()
     link = HTTP_PROTOCOL_SYMBOL + ":" + img_link
     await download(link)
     
@@ -123,6 +117,7 @@ def download_images(img_links, path, forced_name):
     """
 
     global thread_name
+    
     tasks = []
     loop = asyncio.get_event_loop()
     os.chdir(path)
