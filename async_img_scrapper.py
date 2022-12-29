@@ -13,7 +13,7 @@ THREAD_CLASS_STD_NAME = 'postMessage'
 SELECTED_PARSER = 'lxml'
 HTTP_PROTOCOL_SYMBOL = 'http'
 NUM_IMG_STD_SPAN_CLASS = 'ts-images'
-STD_PATH_DOWNLOAD = "C:\\Wallpapers\\"
+STD_PATH_DOWNLOAD = "."
 
 ## other globals
 acceptedFormats = ['webm', '.mp4', '.mp3', '.mov']
