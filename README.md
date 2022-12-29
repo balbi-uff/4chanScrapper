@@ -35,7 +35,7 @@ Every other package used is included in Python 3.8+
 
 ### Example
 ```shell:
-    python 4chanScrapper.py "https://boards.4chan.org/wg/thread/7830569" "C://Users/username/Desktop"
+    python 4chanScrapper.py -l "https://boards.4chan.org/wg/thread/7830569" -p "C://Users/username/Desktop"
 ```
 
 ###### v1.2 - CLI options - stable.
