@@ -1,5 +1,5 @@
 from legacy_img_scrapper import sync_main
-from async_img_scrapper import async_main
+from legacy.async_img_scrapper import async_main
 
 if __name__ == "__main__":
     link_to_test = "https://boards.4chan.org/wg/thread/7830569"
