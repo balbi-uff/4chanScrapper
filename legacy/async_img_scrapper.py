@@ -18,7 +18,7 @@ STD_PATH_DOWNLOAD = "."
 ## other globals
 acceptedFormats = ['webm', '.mp4', '.mp3', '.mov'] # get from txt file
 thread_name = None
-ended_tasks = 0
+number_of_ended_tasks = 0
 number_of_tasks = 0
 
 
@@ -51,7 +51,7 @@ def download(file_link):
     Download single image from link.
     """
     f = requests.get(file_link).content
-    global ended_tasks, number_of_tasks
+    global number_of_ended_tasks, number_of_tasks
 
     with open(get_filename(file_link), 'wb') as tempDownload:
         if not get_filename(file_link)[-4:] in acceptedFormats: # rejects non-declared types of files
