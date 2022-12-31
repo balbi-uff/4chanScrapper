@@ -8,7 +8,7 @@ from time import time as timer
 
 # global vars
 DIV_CLASS_STD_NAME = 'fileText'
-THREAD_CLASS_STD_NAME = 'postMessage'
+THREAD_CLASS_STD_NAME = 'subject'
 SELECTED_PARSER = 'lxml'
 HTTP_PROTOCOL_SYMBOL = 'http'
 NUM_IMG_STD_SPAN_CLASS = 'ts-images'
@@ -85,7 +85,12 @@ def get_all_divs_with_classname(soup, classname):
 
 
 def get_thread_name(soup):
-    pass
+    """
+    Simple function that gets thread name directly from soup.
+    """
+
+    return soup.find('span', class_=THREAD_CLASS_STD_NAME).text
+
 
 
 async def download_tasks(download_path, links_from_threads_files):
@@ -101,8 +106,27 @@ async def download_tasks(download_path, links_from_threads_files):
     await asyncio.gather(*thread_download_tasks)
 
 
+def get_local_html_file_string(file_path):
+    """
+    Gets html file as string.
+    Args:
+        file_path: File path.
+
+    Returns: HTML file converted as string.
+    """
+    with open(file_path, "r") as html_file:
+        return html_file.read()
+
+
+def get_thread_data(thread_link):
+    if "https://boards.4chan.org" in thread_link:
+        return get_thread_data_from_web(thread_link)
+    else:
+        return get_local_html_file_string(thread_link)
+
+
 def download_files_from_thread(thread_link, download_path, **filters):
-    """Download files from inputed thread.
+    """Download files from inputted thread.
 
     Args:
         thread_link (str): Thread link.
@@ -114,7 +138,7 @@ def download_files_from_thread(thread_link, download_path, **filters):
     global number_of_links_to_download
 
     # Gathering files links
-    thread_html = get_thread_data_from_web(thread_link)
+    thread_html = get_thread_data(thread_link)
     thread_soup = make_soup(thread_html, SELECTED_PARSER)
     list_of_thread_files_divs_html = get_all_divs_with_classname(thread_soup, DIV_CLASS_STD_NAME)
     links_from_threads_files = get_file_links_from_thread_divs(list_of_thread_files_divs_html, **filters)

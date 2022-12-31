@@ -8,7 +8,7 @@ from time import time as timer
 
 # globals 
 ## constants
-DIV_CLASS_STD_NAME = 'flegacy/async_img_scrapper.pyileText'
+DIV_CLASS_STD_NAME = 'fileText'
 THREAD_CLASS_STD_NAME = 'postMessage'
 SELECTED_PARSER = 'lxml'
 HTTP_PROTOCOL_SYMBOL = 'http'
