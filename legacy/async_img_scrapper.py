@@ -16,9 +16,9 @@ NUM_IMG_STD_SPAN_CLASS = 'ts-images'
 STD_PATH_DOWNLOAD = "."
 
 ## other globals
-acceptedFormats = ['webm', '.mp4', '.mp3', '.mov']
+acceptedFormats = ['webm', '.mp4', '.mp3', '.mov'] # get from txt file
 thread_name = None
-ended_tasks = 0
+number_of_ended_tasks = 0
 number_of_tasks = 0
 
 
@@ -51,7 +51,7 @@ def download(file_link):
     Download single image from link.
     """
     f = requests.get(file_link).content
-    global ended_tasks, number_of_tasks
+    global number_of_ended_tasks, number_of_tasks
 
     with open(get_filename(file_link), 'wb') as tempDownload:
         if not get_filename(file_link)[-4:] in acceptedFormats: # rejects non-declared types of files
@@ -61,46 +61,6 @@ def download(file_link):
     # there must be a better way to do this, idk, got lazy and used global variables
     os.system("cls")
     print(f"{ended_tasks} of {number_of_tasks} downloaded.")
-
-
-def get_links(main_link, manual_name, min_res_x, min_res_y, max_res_x, max_res_y):
-    """
-    Gets links from images in page
-    """
-    global thread_name
-    
-
-    def get_div_link(image_raw_div):
-        div_soup = make_soup(image_raw_div, SELECTED_PARSER)
-        
-        return div_soup.find('a')['href']
-
-    def get_image_resolution_raw_hard_coded(image_raw_div):
-        div_soup = make_soup(image_raw_div, SELECTED_PARSER)
-        
-        return tuple(map(int, div_soup.text.split(",")[1].strip(")").split("x")))
-
-    links = []
-    raw_content = requests.get(main_link).content
-    soup = make_soup(raw_content, SELECTED_PARSER)
-    if not manual_name:
-        thread_name = get_thread_name_automatically(soup)
-    else:
-        thread_name = manual_name
-    
-    
-    raw_divs = list(map(str, soup.findAll('div', class_=DIV_CLASS_STD_NAME)))
-    
-    
-
-    for raw_div_html in raw_divs:
-        image_resolution = get_image_resolution_raw_hard_coded((raw_div_html))
-        
-        if min_res_x <= image_resolution[0] and min_res_y <= image_resolution[1]:
-            if max_res_x >= image_resolution[0] and max_res_y >= image_resolution[1]:
-                links.append(get_div_link(raw_div_html))
-
-    return links
 
 
 async def download_image_task(img_link):
@@ -133,31 +93,70 @@ def download_images(img_links, path, forced_name):
     loop.close()
 
 
-def async_downloader(link, path, forced_name, min_res_x, min_res_y, max_res_x, max_res_y):
+def get_all_divs_with_classname(soup, classname):
+    return list(map(str, soup.findAll('div', class_=classname)))
+
+
+def get_links(main_link, manual_name, **filters):
+    """
+    Gets links from images in page
+    """
+    global thread_name
+    
+
+    def get_div_link(image_raw_div):
+        div_soup = make_soup(image_raw_div, SELECTED_PARSER)
+        
+        return div_soup.find('a')['href']
+
+    def get_image_resolution_from_div_html(image_raw_div):
+        div_soup = make_soup(image_raw_div, SELECTED_PARSER)
+        
+        return tuple(map(int, div_soup.text.split(",")[1].strip(")").split("x")))
+
+
+    links = []
+    raw_content = requests.get(main_link).content
+    soup = make_soup(raw_content, SELECTED_PARSER)
+    
+    thread_name = get_thread_name(soup)
+    if not manual_name:
+        thread_name = get_thread_name_automatically(soup)
+    else:
+        thread_name = manual_name
+    
+    
+    raw_divs = get_all_divs_with_classname(soup, DIV_CLASS_STD_NAME)
+    
+    ############################################################# MAKE ME WORK!
+
+    for raw_div_html in raw_divs:
+        image_resolution = get_image_resolution_from_div_html((raw_div_html))
+        
+        if min_res_x <= image_resolution[0] and min_res_y <= image_resolution[1]:
+            if max_res_x >= image_resolution[0] and max_res_y >= image_resolution[1]:
+                links.append(get_div_link(raw_div_html))
+        
+    #############################################################
+
+    return links
+
+
+def async_downloader(link, path, forced_name, **filters):
     """
     Function responsible for creating the task of downloading a thread.
     """
     global number_of_tasks
 
-    images_links = get_links(link, forced_name, min_res_x, min_res_y, max_res_x, max_res_y)
+    images_links = get_links(link, forced_name, filters)
     number_of_tasks = len(images_links)
-    try:
-        download_images(images_links, path, forced_name)
-    except TypeError as e:
-        print(f"I AM A BUG AND I STILL EXIST, THERE IS NO ONE WHO CAN EXTINGUISH ME, PLEASE KILL ME!\nDescription:{e}")
+    
+    download_images(images_links, path, forced_name)
+    
     return number_of_tasks
 
-def async_main(link, path, forced_name, min_res_x, min_res_y, max_res_x, max_res_y):
-    """
-     Times the time it takes to download.
-    """
-    start = timer()
-    if not path:
-        path = STD_PATH_DOWNLOAD
-    async_downloader(link, path, forced_name, min_res_x, min_res_y, max_res_x, max_res_y)
-    end = timer()
-    return end-start
 
+def download_from_thread(thread_link, instalation_path, **filters):
+    async_downloader(thread_link, instalation_path, filters)
 
 # developed by Andre Balbi - DerKatze789 - balbi-uff
-# Fluminense Federal University - Rio de Janeiro - Brazil

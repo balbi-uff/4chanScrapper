@@ -1,5 +1,5 @@
 from json.tool import main
-from async_img_scrapper import async_downloader
+from legacy.async_img_scrapper import async_downloader
 import os
 import sys
 
