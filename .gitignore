@@ -1,4 +1,3 @@
 **-workspace
 *.pytest**
-**/test_cases/*
 **/.idea/*

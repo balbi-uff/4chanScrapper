@@ -56,11 +56,17 @@ def download(file_link):
     print(f"{number_of_ended_tasks} of {number_of_links_to_download} downloaded!")
 
 
-async def download_image_task(img_link):  # WATCH MY ASS
+async def download_image_task(img_link):
     """
-    Function responsible for creating the task of downloading a single image.
+    Creates the task of downloading a single image.
+    Args:
+        img_link: Link of the image, the standart is a internal link without the protocol included.
+
+    Returns:
+
     """
     link = HTTP_PROTOCOL_SYMBOL + ":" + img_link
+    print(f"Downloading {link}")
     download(link)
 
 
@@ -90,7 +96,6 @@ def get_thread_name(soup):
     """
 
     return soup.find('span', class_=THREAD_CLASS_STD_NAME).text
-
 
 
 async def download_tasks(download_path, links_from_threads_files):
@@ -125,6 +130,10 @@ def get_thread_data(thread_link):
         return get_local_html_file_string(thread_link)
 
 
+def has_empty_arguments(t, d):
+    return '' in [t, d]
+
+
 def download_files_from_thread(thread_link, download_path, **filters):
     """Download files from inputted thread.
 
@@ -136,6 +145,10 @@ def download_files_from_thread(thread_link, download_path, **filters):
         int: Number of tasks created (number of downloads)
     """
     global number_of_links_to_download
+
+    # Analyse arguments
+    if has_empty_arguments(thread_link, download_path):
+        raise Exception("Invalid number of arguments. Please, pass at least 2 arguments")
 
     # Gathering files links
     thread_html = get_thread_data(thread_link)
