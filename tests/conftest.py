@@ -39,6 +39,7 @@ def setup_for_thread_name_at_battleship_thread_dir():
     # test
     yield
 
+
 @pytest.fixture()
 def setup_and_teardown_at_battleship_thread_dir():
     # setup
