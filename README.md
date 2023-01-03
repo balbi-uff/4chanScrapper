@@ -14,7 +14,9 @@ This program works in two separate ways, the automatic mode and the manual mode.
 <br>
 This is the default mode, and it is the easiest to use. Just run the program with the thread link and download_path. The program will automatically download the files in the thread, according to your filters.
 <br>
-`$ python Fscrapper.py <thread_link> <download_path>`
+```commandline
+python Fscrapper.py thread_link download_path
+```
 
 **Manual mode**
 <br>
@@ -23,8 +25,8 @@ Make sure to use the `-m` flag to enable the manual mode. Followed by the thread
 Using manual mode, you may decide (or not) to insert minimum and maximum resolution filters for the downloaded files.
 <br>
 
-```bash
-$ python Fscrapper.py -m thread_link download_path --min-res x y --max-res x y
+```commandline
+python Fscrapper.py -m thread_link download_path --min-res x y --max-res x y
 ```
 
 > More implementations are planned for the future, they will expand the difference between the two modes.
