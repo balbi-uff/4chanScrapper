@@ -1,8 +1,10 @@
 import sys
-
+from rich.console import Console
+from rich.markdown import Markdown
 from scrapper.scrapper_methods import download_files_from_thread
 
 MINIMUM_ARGUMENTS_THRESHOLD = 1
+console = Console()
 
 
 def get_arguments_from_command_line():
@@ -31,7 +33,9 @@ def manual_resolution_setting_full_config(arguments):
     """
     Checks if resolution is set in manual mode - full config and not in simple.
     """
-    return ("--max-res" in arguments or "--min-res" in arguments) and not manual_resolution_setting_simple(arguments)
+    return (
+        "--max-res" in arguments or "--min-res" in arguments
+    ) and not manual_resolution_setting_simple(arguments)
 
 
 def get_resolution_from_arguments_standart(res_arguments, resolution_trigger_str):
@@ -90,30 +94,57 @@ def manual_mode_download(arguments):
 
     manual_mode_arguments = arguments[2:]
     if manual_resolution_setting_simple(manual_mode_arguments):
-        x_resolution, y_resolution = get_resolution_from_arguments_simple(manual_mode_arguments)
-        print("Resolution limits set to: " + str(x_resolution) + "x" + str(y_resolution))
+        x_resolution, y_resolution = get_resolution_from_arguments_simple(
+            manual_mode_arguments
+        )
+        print(
+            "Resolution limits set to: " + str(x_resolution) + "x" + str(y_resolution)
+        )
 
-        return download_files_from_thread(manual_mode_arguments[0], manual_mode_arguments[1],
-                                          min_x_res=x_resolution, min_y_res=y_resolution,
-                                          max_x_res=None, max_y_res=None
-                                          )
+        return download_files_from_thread(
+            manual_mode_arguments[0],
+            manual_mode_arguments[1],
+            min_x_res=x_resolution,
+            min_y_res=y_resolution,
+            max_x_res=None,
+            max_y_res=None,
+        )
     if manual_resolution_setting_full_config(manual_mode_arguments):
-        [min_x, min_y, max_x, max_y] = get_resolution_from_arguments_full_config(manual_mode_arguments)
+        [min_x, min_y, max_x, max_y] = get_resolution_from_arguments_full_config(
+            manual_mode_arguments
+        )
         print("minimum accepted resolution: " + str(min_x) + "x" + str(min_y))
         print("maximum accepted resolution: " + str(max_x) + "x" + str(max_y))
 
-        return download_files_from_thread(manual_mode_arguments[0], manual_mode_arguments[1],
-                                          min_x_res=min_x, min_y_res=min_y,
-                                          max_x_res=max_x, max_y_res=max_y
-                                          )
+        return download_files_from_thread(
+            manual_mode_arguments[0],
+            manual_mode_arguments[1],
+            min_x_res=min_x,
+            min_y_res=min_y,
+            max_x_res=max_x,
+            max_y_res=max_y,
+        )
     else:
-        raise Exception("Resolution not set. Please set resolution with --resolution <resolution-x> <resolution-y> or "
-                        "type -h for help.")
+        raise Exception(
+            "Resolution not set. Please set resolution with --resolution <resolution-x> <resolution-y> or "
+            "type -h for help."
+        )
 
 
-if __name__ == '__main__':
+def display_help():
+    with open("README.md", "r+") as help_file:
+        console.print(Markdown(help_file.read()))
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    console.print("For help use the arguments -h or --help", style="bold red underline")
     command_line_arguments = get_arguments_from_command_line()
     try:
+        if len(command_line_arguments) and command_line_arguments[
+            len(command_line_arguments) - 1
+        ].lower() in ["--help", "-h"]:
+            display_help()
         if is_manual_mode_trigger(command_line_arguments[1]):
             manual_mode_download(command_line_arguments)
         elif has_minimum_argument_thresold(command_line_arguments):
