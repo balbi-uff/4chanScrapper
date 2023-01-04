@@ -18,7 +18,7 @@ def is_manual_mode_trigger(argument):
     return argument.startswith("-m")
 
 
-def has_minimum_argument_thresold(arguments):
+def has_minimum_argument_threshold(arguments):
     return len(arguments) >= MINIMUM_ARGUMENTS_THRESHOLD
 
 
@@ -38,7 +38,7 @@ def manual_resolution_setting_full_config(arguments):
     ) and not manual_resolution_setting_simple(arguments)
 
 
-def get_resolution_from_arguments_standart(res_arguments, resolution_trigger_str):
+def get_resolution_from_arguments_abstract(res_arguments, resolution_trigger_str):
     """
     Abstract method for getting resolution from arguments.
     """
@@ -52,13 +52,13 @@ def get_resolution_from_arguments_simple(res_arguments):
     """
     Gets resolution from arguments.
     """
-    return get_resolution_from_arguments_standart(res_arguments, "--resolution")
+    return get_resolution_from_arguments_abstract(res_arguments, "--resolution")
 
 
 def define_resolution_full_config(res_args, resolution_trigger_str):
     # Obtain minimum resolution
     if resolution_trigger_str in res_args:
-        x, y = get_resolution_from_arguments_standart(res_args, resolution_trigger_str)
+        x, y = get_resolution_from_arguments_abstract(res_args, resolution_trigger_str)
     else:
         x, y = None, None
     return x, y
@@ -147,7 +147,7 @@ if __name__ == "__main__":
             display_help()
         if is_manual_mode_trigger(command_line_arguments[1]):
             manual_mode_download(command_line_arguments)
-        elif has_minimum_argument_thresold(command_line_arguments):
+        elif has_minimum_argument_threshold(command_line_arguments):
             thread_link = command_line_arguments[1]
 
             if len(command_line_arguments) == 2:
