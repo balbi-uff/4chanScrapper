@@ -220,5 +220,8 @@ def download_files_from_thread(thread_link, download_path, **filters):
     number_of_links_to_download = len(links_from_threads_files)
 
     asyncio.run(download_tasks(download_path, links_from_threads_files))
+    # TODO https://rich.readthedocs.io/en/stable/progress.html
+    # TODO FIX VENV
+    # TODO REVAMP LOG SYSTEM WITH RICH
 
     return number_of_links_to_download

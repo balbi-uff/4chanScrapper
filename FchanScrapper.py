@@ -1,10 +1,10 @@
 import sys
-from rich.console import Console
 from rich.markdown import Markdown
+from scrapper.log_methods import *
 from scrapper.scrapper_methods import download_files_from_thread
 
 MINIMUM_ARGUMENTS_THRESHOLD = 1
-console = Console()
+HELP_TRIGGERS = ["-h", "--help"]
 
 
 def get_arguments_from_command_line():
@@ -18,7 +18,7 @@ def is_manual_mode_trigger(argument):
     return argument.startswith("-m")
 
 
-def has_minimum_argument_thresold(arguments):
+def has_minimum_argument_threshold(arguments):
     return len(arguments) >= MINIMUM_ARGUMENTS_THRESHOLD
 
 
@@ -97,8 +97,8 @@ def manual_mode_download(arguments):
         x_resolution, y_resolution = get_resolution_from_arguments_simple(
             manual_mode_arguments
         )
-        print(
-            "Resolution limits set to: " + str(x_resolution) + "x" + str(y_resolution)
+        log_setting_resolution_message(
+            "Resolution limits set to", x_resolution, y_resolution
         )
 
         return download_files_from_thread(
@@ -113,8 +113,8 @@ def manual_mode_download(arguments):
         [min_x, min_y, max_x, max_y] = get_resolution_from_arguments_full_config(
             manual_mode_arguments
         )
-        print("minimum accepted resolution: " + str(min_x) + "x" + str(min_y))
-        print("maximum accepted resolution: " + str(max_x) + "x" + str(max_y))
+        log_setting_resolution_message("Minimum accepted resolution", min_x, min_y)
+        log_setting_resolution_message("Maximum accepted resolution", max_x, max_y)
 
         return download_files_from_thread(
             manual_mode_arguments[0],
@@ -133,21 +133,26 @@ def manual_mode_download(arguments):
 
 def display_help():
     with open("README.md", "r+") as help_file:
-        console.print(Markdown(help_file.read()))
+        log_console.print(Markdown(help_file.read()))
     sys.exit(0)
 
 
+def is_help_trigger(arguments):
+    return any([i.lower() in arguments for i in HELP_TRIGGERS])
+
+
 if __name__ == "__main__":
-    console.print("For help use the arguments -h or --help", style="bold red underline")
+    log_console.print("For help use the arguments -h or --help", style="bold red underline")
     command_line_arguments = get_arguments_from_command_line()
     try:
-        if len(command_line_arguments) and command_line_arguments[
-            len(command_line_arguments) - 1
-        ].lower() in ["--help", "-h"]:
+        if is_help_trigger(command_line_arguments):
             display_help()
-        if is_manual_mode_trigger(command_line_arguments[1]):
+        elif is_manual_mode_trigger(command_line_arguments[1]):
             manual_mode_download(command_line_arguments)
-        elif has_minimum_argument_thresold(command_line_arguments):
+
+        # Enters automatic mode
+
+        elif has_minimum_argument_threshold(command_line_arguments):
             thread_link = command_line_arguments[1]
 
             if len(command_line_arguments) == 2:
@@ -159,9 +164,9 @@ if __name__ == "__main__":
             raise Exception("Not enough arguments.")
         sys.exit(0)
     except IndexError as e:
-        print("Please insert arguments correctly while on manual mode.")
+        log_error_message("Please insert arguments correctly while on manual mode.")
 
     except Exception as e:
-        print(e)
+        log_error_message(e)
 
     sys.exit(1)

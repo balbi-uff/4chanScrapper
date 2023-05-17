@@ -1,0 +1,26 @@
+name: General Tests
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+
+jobs:
+  test:
+    name: Run Tests
+    run-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Tests
+        run: python -m pytest

@@ -4,7 +4,8 @@ from conftest import temp_dir_path, temp_dir_name, projects_test_directory
 import sys
 
 # Path adjustment to add scrapper methods
-sys.path.append(projects_test_directory)
+parent_dir = os.path.dirname(os.path.abspath(os.getcwd()))
+sys.path.append(parent_dir)
 from scrapper.scrapper_methods import *
 from FchanScrapper import manual_mode_download
 
@@ -26,7 +27,7 @@ class Test_Scrapper:
             setup_and_teardown_at_temp_dir: Pytest fixture with setup and teardown functions.
 
         """
-        selected_thread_link = "https://boards.4chan.org/wg/thread/7950511"
+        selected_thread_link = "https://boards.4chan.org/wg/thread/7986462"
         selected_download_path_link = "."
 
         number_of_links = download_files_from_thread(selected_thread_link, selected_download_path_link)
@@ -42,8 +43,8 @@ class Test_Scrapper:
         Returns:
 
         """
-        selected_thread_link = "https://boards.4chan.org/wg/thread/7950511"
-        selected_download_path_link = "."  # current directory is $temp here
+        selected_thread_link = "https://boards.4chan.org/wg/thread/7986462"
+        selected_download_path_link = "."  # cwd is $temp here at runtime
 
         arguments = [
             "FchanScrapper.py",
@@ -67,8 +68,8 @@ class Test_Scrapper:
         Returns:
 
         """
-        selected_thread_link = "https://boards.4chan.org/wg/thread/7950511"
-        selected_download_path_link = "."  # current directory is $temp here
+        selected_thread_link = "https://boards.4chan.org/wg/thread/7986462"
+        selected_download_path_link = "."  # cwd is $temp here at runtime
 
         arguments = [
             "FchanScrapper.py",
